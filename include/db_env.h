@@ -347,6 +347,7 @@ public:
 #pragma region[WriteOptions]
   // if true, this write request is of lower priority if compaction is behind
   bool low_pri = true;
+  // bool low_pri = false;
 
   // if true, the write will be flushed from the operating system buffer cache
   // before the write is considered complete. If true, write will be slower.
@@ -354,10 +355,12 @@ public:
 
   // if true, write will not first go to the write ahead log.
   bool disableWAL = true;
+  // bool disableWAL = false;
 
   // if true and we need to wait or sleep for the write request, fails
   // immediately with Status::Incomplete()
   bool no_slowdown = false;
+  // bool no_slowdown = true;
 
   // If true and if user is trying to write to column families that don't exist
   // (they were dropped),  ignore the write (don't return an error). If there
