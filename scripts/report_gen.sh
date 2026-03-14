@@ -78,7 +78,7 @@ for d_top in rsvz-*/; do
     done
 done
 
-# --- Phase 2: Row Sorting ---
+# --- Phase 2: Row and Policy Sorting ---
 
 sorted_rows=$(for r in "${!all_rows[@]}"; do
     curr_x="${r%->*}"
@@ -86,7 +86,19 @@ sorted_rows=$(for r in "${!all_rows[@]}"; do
     [[ "$curr_y" == "no" ]] && echo "2 $curr_x 0 $r" || echo "1 $curr_x $curr_y $r"
 done | sort -k1,1n -k2,2n -k3,3n | awk '{print $NF}')
 
-sorted_policies=$(echo "${!all_policies[@]}" | tr ' ' '\n' | sort)
+# Enforce exact column order for policies
+target_order=(default caza real-oaza zonekv our-oaza overlap nearest hybrid1 hybrid2 hybrid3 hybrid4)
+sorted_policies=""
+
+for p in "${target_order[@]}"; do
+    # Only append the policy if it was actually found in the directories
+    if [[ -n "${all_policies[$p]}" ]]; then
+        sorted_policies="$sorted_policies $p"
+    fi
+done
+
+# Strip leading space
+sorted_policies="${sorted_policies# }"
 
 # --- Phase 3: Writing Matrix Files ---
 
