@@ -31,6 +31,7 @@ for d_top in rsvz-*/; do
         # Locate the latest files
         LATEST_NAME_LOG=$(ls "$d_fp/${policy}"_*.log 2>/dev/null | sort | tail -n 1)
         LATEST_STDOUT_LOG=$(ls "$d_fp/stdout_"*.log 2>/dev/null | sort | tail -n 1)
+        LATEST_WORKLOAD_LOG=$(ls "$d_fp/workload_"*.log 2>/dev/null | sort | tail -n 1)
 
         # 1. Extraction from name log (Resets, GC)
         if [[ -f "$LATEST_NAME_LOG" ]]; then
@@ -40,26 +41,40 @@ for d_top in rsvz-*/; do
             gc_matrix["$row_label,$policy"]=$(awk -v mb="$gc_mb" 'BEGIN { if (mb == "" || mb == "0") print "0.00"; else printf "%.2f", mb / 1024 }')
         fi
 
-        # 2. Extraction from stdout log (Ops, Time, Progress)
+        # 2. Extraction from stdout and workload logs (Ops, Time, Progress)
         if [[ -f "$LATEST_STDOUT_LOG" ]]; then
             
             # Extract Ops
             ops_matrix["$row_label,$policy"]=$(grep -E "finished [0-9]+ ops" "$LATEST_STDOUT_LOG" | tail -n 1 | awk '{print $(NF-1)}')
 
-            # Extract Time (Converted to total seconds)
-            val_time=$(grep "Experiment completed in" "$LATEST_STDOUT_LOG" | tail -n 1 | awk '{
-                sub(/h/, "", $4);
-                sub(/m/, "", $5);
-                sub(/s/, "", $6);
-                print ($4 * 3600) + ($5 * 60) + $6
-            }')
-            [[ -n "$val_time" ]] && time_matrix["$row_label,$policy"]="$val_time"
+            # --- OLD TIME LOGIC (Commented out) ---
+            # val_time=$(grep "Experiment completed in" "$LATEST_STDOUT_LOG" | tail -n 1 | awk '{
+            #     sub(/h/, "", $4);
+            #     sub(/m/, "", $5);
+            #     sub(/s/, "", $6);
+            #     print ($4 * 3600) + ($5 * 60) + $6
+            # }')
+            # [[ -n "$val_time" ]] && time_matrix["$row_label,$policy"]="$val_time"
+            # --------------------------------------
 
             # Extract Max Progress
             val_progress=$(grep -o '[0-9.]\+%' "$LATEST_STDOUT_LOG" | tr -d '%' | sort -n | tail -n 1)
             [[ -n "$val_progress" ]] && progress_matrix["$row_label,$policy"]=$(printf "%.2f" "$val_progress")
             
         fi
+
+        # --- NEW TIME LOGIC ---
+        val_time=""
+        if [[ -f "$LATEST_WORKLOAD_LOG" ]]; then
+            # Extract nanoseconds, convert to seconds, and round to nearest integer
+            val_time=$(grep "Workload Execution Time:" "$LATEST_WORKLOAD_LOG" | tail -n 1 | awk '{ printf "%.0f\n", $NF / 1000000000 }')
+        elif [[ -f "$LATEST_STDOUT_LOG" ]]; then
+            # Fallback: Extract Uptime(secs) and sum the total and interval values, rounded to nearest integer
+            val_time=$(grep "Uptime(secs):" "$LATEST_STDOUT_LOG" | tail -n 1 | awk '{ printf "%.0f\n", $2 + $4 }')
+        fi
+        [[ -n "$val_time" ]] && time_matrix["$row_label,$policy"]="$val_time"
+        # ----------------------
+
     done
 done
 
