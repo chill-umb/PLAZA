@@ -17,3 +17,4 @@ rm -f *.log
 # sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib ./zenfs mkfs --force --zbd=nvme4n1 --aux_path=/home/afschy/db_extra_4/
 # sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib ./zenfs mkfs --force --zbd=nvme5n1 --aux_path=/home/afschy/db_extra_5/
 # sudo LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib ./zenfs mkfs --force --zbd=nvme6n1 --aux_path=/home/afschy/db_extra_6/
+rm -f *.log
