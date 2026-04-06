@@ -68,17 +68,17 @@ for file_placement_policy in "${file_placement_policies[@]}"; do
         ${PARAMFILE}
     fi
 
-    # eval $run_dbb > stdout.log 2>&1
-    eval $run_wld > stdout.log 2>&1
-
-    # sudo chmod 777 /home/afschy/db_extra
-    # sudo chmod 777 /home/afschy/db_extra/rocksdbtest
-    # sudo chmod 777 /home/afschy/db_extra/rocksdbtest/dbbench
-    # mv /home/afschy/db_extra/rocksdbtest/dbbench/LOG ./rocksdb.log
+    eval $run_dbb > stdout.log 2>&1
+    # eval $run_wld > stdout.log 2>&1
 
     sudo chmod 777 /home/afschy/db_extra
-    sudo chmod 777 /home/afschy/db_extra/db
-    mv /home/afschy/db_extra/db/LOG ./rocksdb.log
+    sudo chmod 777 /home/afschy/db_extra/rocksdbtest
+    sudo chmod 777 /home/afschy/db_extra/rocksdbtest/dbbench
+    mv /home/afschy/db_extra/rocksdbtest/dbbench/LOG ./rocksdb.log
+
+    # sudo chmod 777 /home/afschy/db_extra
+    # sudo chmod 777 /home/afschy/db_extra/db
+    # mv /home/afschy/db_extra/db/LOG ./rocksdb.log
 
     timestamp=$(date +"%y-%m-%d_%H-%M")
     for file in *.log; do
