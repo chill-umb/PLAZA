@@ -19,11 +19,11 @@ compaction_pri=3
 gc_interval=10
 
 reserve_count=10
-gc_start_level=25
-gc_stop_level=35
+gc_start_level=20
+gc_stop_level=30
 gc_slope=no
 
-file_placement_policies=( "default" "caza" "zonekv" "real-oaza" "nearest" "nearest-30" )
+file_placement_policies=( "default" "caza" "zonekv" "real-oaza" "nearest" "hybrid1" "hybrid2" "hybrid3" )
 
 run_dbb="sudo ./bin/db_bench --benchmarks="fillrandom,stats" --num=${entry_count} \
         --write_buffer_size=$((file_size_mb * MB)) --target_file_size_base=$((file_size_mb * MB)) \
@@ -68,17 +68,17 @@ for file_placement_policy in "${file_placement_policies[@]}"; do
         ${PARAMFILE}
     fi
 
-    # eval $run_dbb > stdout.log 2>&1
-    eval $run_wld > stdout.log 2>&1
-
-    # sudo chmod 777 /home/afschy/db_extra
-    # sudo chmod 777 /home/afschy/db_extra/rocksdbtest
-    # sudo chmod 777 /home/afschy/db_extra/rocksdbtest/dbbench
-    # mv /home/afschy/db_extra/rocksdbtest/dbbench/LOG ./rocksdb.log
+    eval $run_dbb > stdout.log 2>&1
+    # eval $run_wld > stdout.log 2>&1
 
     sudo chmod 777 /home/afschy/db_extra
-    sudo chmod 777 /home/afschy/db_extra/db
-    mv /home/afschy/db_extra/db/LOG ./rocksdb.log
+    sudo chmod 777 /home/afschy/db_extra/rocksdbtest
+    sudo chmod 777 /home/afschy/db_extra/rocksdbtest/dbbench
+    mv /home/afschy/db_extra/rocksdbtest/dbbench/LOG ./rocksdb.log
+
+    # sudo chmod 777 /home/afschy/db_extra
+    # sudo chmod 777 /home/afschy/db_extra/db
+    # mv /home/afschy/db_extra/db/LOG ./rocksdb.log
 
     timestamp=$(date +"%y-%m-%d_%H-%M")
     for file in *.log; do
