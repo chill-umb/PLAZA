@@ -2,7 +2,7 @@
 
 REAL_USER=${SUDO_USER:-$(whoami)}
 REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
-export ZENFS_PARAMS="${ZENFS_PARAMS:-${REAL_HOME}/RocksDB-Wrapper/lib/rocksdb/plugin/zenfs/params.txt}"
+export ZENFS_PARAMS="${ZENFS_PARAMS:-${REAL_HOME}/PLAZA/lib/rocksdb/plugin/zenfs/params.txt}"
 
 KB=$((1024))
 MB=$((1024 * $KB))
@@ -29,7 +29,7 @@ gc_slope=no
 
 dbbench_or_tectonic=dbbench
 
-file_placement_policies=( "default" "caza" "zonekv" "real-oaza" "nearest" "hybrid1" "hybrid2" "hybrid3" )
+file_placement_policies=( "default" "caza" "zonekv" "real-oaza" "nearest" "nearest-30" )
 
 run_dbb="env ZENFS_PARAMS=$ZENFS_PARAMS ./bin/db_bench --benchmarks="fillrandom,stats" --num=${entry_count} \
         --write_buffer_size=$((file_size_mb * MB)) --target_file_size_base=$((file_size_mb * MB)) \
