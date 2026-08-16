@@ -1,6 +1,10 @@
 # PLAZA
 
 This repository contains the experimental infrastructure for the paper "PLAZA: Proximity & Lifetime-Aware Zone Allocation for LSM Engines on ZNS SSDs".
+It contains 3 submodules: lib/rocksdb, lib/tectonic, and lib/rocksdb/plugin/zenfs.
+- lib/rocksdb contains a slightly modified version of RocksDB, which allows for passing some metadata required by most zone allocation policies to the ZNS layer. [repo](https://github.com/chill-umb/rocksdb_plaza)
+- lib/rocksdb/plugin/zenfs contains the implementation of all zone allocation and GC policies, including PLAZA and PLAZA-GC. This is a heavily modified version of ZenFS. [repo](https://github.com/chill-umb/zenfs_plaza)
+- lib/tectonic contains the tectonic workload generator. [repo](https://github.com/SSD-Brandeis/tectonic)
 
 ## Setup
 
